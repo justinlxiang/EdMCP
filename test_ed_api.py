@@ -18,6 +18,7 @@ def test_api():
     try:
         print("\nTesting get_user_info()...")
         user_info = ed.get_user_info()
+        print(user_info["user"])
         if user_info:
             print(f"Success! User: {user_info['user']['name']}")
             print(f"Email: {user_info['user']['email']}")
@@ -26,6 +27,7 @@ def test_api():
             # Print available courses
             print("\nAvailable courses:")
             for course in user_info["courses"][:5]:
+                print(course)
                 print(f"- {course['course']['code']}: {course['course']['name']} (ID: {course['course']['id']})")
         else:
             print("Error: Could not retrieve user info")
