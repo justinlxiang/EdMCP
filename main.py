@@ -2,19 +2,25 @@ import sys, logging, os
 from contextlib import redirect_stdout
 from mcp.server.fastmcp import FastMCP
 from edapi import EdAPI
-from dotenv import load_dotenv
-
-# Load environment variables from .env file
-load_dotenv()
 
 # Initialize MCP server with a clear name
 mcp = FastMCP("Ed Discussion MCP Server")
 ed = EdAPI()
-ed.api_token = str(os.environ.get("ED_API_TOKEN"))
+
+# Check for API token in environment variable
+if 'ED_API_TOKEN' in os.environ:
+    ed.api_token = os.environ['ED_API_TOKEN']
+    print("API token loaded from environment variable")
+# Fallback to command line argument if provided
+elif len(sys.argv) > 1:
+    ed.api_token = sys.argv[1]
+    print("API token loaded from command line argument")
+else:
+    logging.error("ED_API_TOKEN not provided in environment or as command line argument")
+    sys.exit(1)
 
 logging.info("Ed Discussion MCP Server ready.")
 
-print("HI")
 @mcp.tool()
 def fetch_ed_posts(course_id: int, category: str = "General") -> list:
     """

@@ -39,15 +39,17 @@ This server implements the Model Context Protocol (MCP) to allow Claude Desktop 
 2. **Add your MCP server:**
    ```json
    {
-     "mcpServers": {
-       "ed-discussion": {
-         "command": "/ABSOLUTE/PATH/TO/python",
-         "args": [
-           "/ABSOLUTE/PATH/TO/main.py"
-         ]
-       }
-     }
+      "mcpServers": {
+         "ed-discussion": {
+            "command": "/PATH/TO/python",
+            "args": ["/PATH/TO/main.py"],
+            "env": {
+            "ED_API_TOKEN": "your-token-here"
+            }
+         }
+      }
    }
+
    ```
 
 3. **Restart Claude Desktop**
