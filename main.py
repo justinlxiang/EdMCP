@@ -50,25 +50,6 @@ def get_user_info() -> dict:
     """Get info about the currently authenticated Ed Discussion user."""
     # Get the user info from EdAPI
     user_info = ed.get_user_info()
-    
-    # Extract essential user data for a cleaner response
-    # simplified_info = {
-    #     "user": {
-    #         "id": user_info["user"]["id"],
-    #         "name": user_info["user"]["name"],
-    #         "email": user_info["user"]["email"],
-    #         "role": user_info["user"]["role"]
-    #     },
-    #     "courses": [
-    #         {
-    #             "id": course["course"]["id"],
-    #             "code": course["course"]["code"],
-    #             "name": course["course"]["name"],
-    #             "role": course["role"]["role"]
-    #         }
-    #         for course in user_info["courses"]
-    #     ]
-    # }
         
     return user_info
 
