@@ -41,7 +41,7 @@ This server implements the Model Context Protocol (MCP) to allow Claude Desktop 
    {
      "mcpServers": {
        "ed-discussion": {
-         "command": "python",
+         "command": "/ABSOLUTE/PATH/TO/python",
          "args": [
            "/ABSOLUTE/PATH/TO/main.py"
          ]
@@ -53,9 +53,7 @@ This server implements the Model Context Protocol (MCP) to allow Claude Desktop 
 3. **Restart Claude Desktop**
 
 4. **First-time use:**
-   - The first time you use an Ed Discussion tool, Claude will ask for your API token
-   - Simply paste your Ed Discussion API token into the chat
-   - Your token will be saved for future sessions
+   - TODO
 
 ## Available MCP Tools
 
@@ -63,7 +61,6 @@ This server exposes the following tools to Claude:
 
 | Tool | Description |
 |------|-------------|
-| `set_api_token` | Set your Ed Discussion API token |
 | `fetch_ed_posts` | Search for similar posts in a course |
 | `post_ed_question` | Post a new question to a course |
 | `get_user_info` | Get information about your user account |
