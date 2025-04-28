@@ -25,7 +25,7 @@ def fetch_ed_posts(course_id: int, question: str, category: str = "General") -> 
     return matches
 
 @mcp.tool()
-def post_ed_question(course_id: int, title: str, content: str, category: str = "General") -> dict:
+def post_ed_question(course_id: int, title: str, content: str, category: str = "General", anonymous: bool = False, isPrivate: bool = False) -> dict:
     """
     Post a new question to Ed Discussion.
     """
@@ -38,8 +38,8 @@ def post_ed_question(course_id: int, title: str, content: str, category: str = "
             "subsubcategory": "",
             "content": content_xml,
             "is_pinned": False,
-            "is_private": False,
-            "is_anonymous": False,
+            "is_private": isPrivate,
+            "is_anonymous": anonymous,
             "is_megathread": False,
             "anonymous_comments": False
         }
