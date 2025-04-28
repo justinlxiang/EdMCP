@@ -37,19 +37,33 @@ This server implements the Model Context Protocol (MCP) to allow Claude Desktop 
    - **Windows:** `%APPDATA%\Claude\claude_desktop_config.json`
 
 2. **Add your MCP server:**
+   
+   **Option 1: Run locally with Python**
    ```json
    {
-      "mcpServers": {
-         "ed-discussion": {
-            "command": "/PATH/TO/python",
-            "args": ["/PATH/TO/main.py"],
-            "env": {
-            "ED_API_TOKEN": "your-token-here"
-            }
+     "mcpServers": {
+       "ed-discussion": {
+         "command": "/PATH/TO/python",
+         "args": ["/PATH/TO/main.py"],
+         "env": {
+           "ED_API_TOKEN": "your-token-here"
          }
-      }
+       }
+     }
    }
-
+   ```
+   
+   **Option 2: Run with Docker**
+   ```json
+   {
+     "mcpServers": {
+       "ed-discussion": {
+         "command": "docker",
+         "args": ["run", "--rm", "-i", "-e", "ED_API_TOKEN=your-token-here", "justinxiang05/edmcp:latest"],
+         "env": {}
+       }
+     }
+   }
    ```
 
 3. **Restart Claude Desktop**
