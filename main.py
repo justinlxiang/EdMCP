@@ -7,14 +7,6 @@ from dotenv import load_dotenv
 # Load environment variables from .env file
 load_dotenv()
 
-# 1️⃣  All human logs to **stderr**
-logging.basicConfig(stream=sys.stderr, level=logging.INFO,
-                    format="%(asctime)s %(levelname)s %(message)s")
-
-# 2️⃣  Disable ANSI colours & noisy warnings that might hit stdout
-os.environ["NO_COLOR"] = "1"          # for Rich/Click et al.
-os.environ["PYTHONWARNINGS"] = "ignore"
-
 # Initialize MCP server with a clear name
 mcp = FastMCP("Ed Discussion MCP Server")
 ed = EdAPI()
@@ -22,6 +14,7 @@ ed.api_token = str(os.environ.get("ED_API_TOKEN"))
 
 logging.info("Ed Discussion MCP Server ready.")
 
+print("HI")
 @mcp.tool()
 def fetch_ed_posts(course_id: int, question: str, category: str = "General") -> list:
     """
