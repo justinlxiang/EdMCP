@@ -53,7 +53,7 @@ This server implements the Model Context Protocol (MCP) to allow Claude Desktop 
 3. **Restart Claude Desktop**
 
 4. **First-time use:**
-   - TODO
+   - Add ED_API_TOKEN into your .env file with "ED_API_TOKEN=your-token-here" 
 
 ## Available MCP Tools
 
