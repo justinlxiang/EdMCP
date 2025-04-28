@@ -1,9 +1,0 @@
-version: '3'
-
-services:
-  edmcp:
-    build: .
-    environment:
-      - ED_API_TOKEN=${ED_API_TOKEN}
-    stdin_open: true
-    tty: true 
