@@ -1,23 +1,33 @@
+import sys, logging, os
+from contextlib import redirect_stdout
 from mcp.server.fastmcp import FastMCP
-from ed_client import EdClient
+from edapi import EdAPI
+from dotenv import load_dotenv
 
+# Load environment variables from .env file
+load_dotenv()
+
+# 1️⃣  All human logs to **stderr**
+logging.basicConfig(stream=sys.stderr, level=logging.INFO,
+                    format="%(asctime)s %(levelname)s %(message)s")
+
+# 2️⃣  Disable ANSI colours & noisy warnings that might hit stdout
+os.environ["NO_COLOR"] = "1"          # for Rich/Click et al.
+os.environ["PYTHONWARNINGS"] = "ignore"
+
+# Initialize MCP server with a clear name
 mcp = FastMCP("Ed Discussion MCP Server")
-ed = EdClient()
+ed = EdAPI()
+ed.api_token = str(os.environ.get("ED_API_TOKEN"))
 
-@mcp.tool()
-def set_api_token(token: str) -> str:
-    """Set and save your Ed Discussion API token."""
-    ed.set_api_token(token)
-    return "API token saved successfully. You can now use Ed Discussion tools."
+logging.info("Ed Discussion MCP Server ready.")
 
 @mcp.tool()
 def fetch_ed_posts(course_id: int, question: str, category: str = "General") -> list:
     """
     Fetch relevant Ed Discussion posts given a user question.
-    """
-    if not ed.api.api_token:
-        return ["Please provide your Ed Discussion API token to continue."]
-    threads = ed.get_threads(course_id, limit=20)
+    """ 
+    threads = ed.list_threads(course_id, limit=20)
     matches = [t for t in threads if question.lower() in t['title'].lower()]
     return matches
 
@@ -26,39 +36,64 @@ def post_ed_question(course_id: int, title: str, content: str, category: str = "
     """
     Post a new question to Ed Discussion.
     """
-    if not ed.api.api_token:
-        return {"error": "Please provide your Ed Discussion API token to continue."}
     content_xml = f'<document version="2.0"><paragraph>{content}</paragraph></document>'
-    result = ed.post_thread(course_id, title, content_xml, category)
+    params = {
+            "type": "post",
+            "title": title,
+            "category": category,
+            "subcategory": "",
+            "subsubcategory": "",
+            "content": content_xml,
+            "is_pinned": False,
+            "is_private": False,
+            "is_anonymous": False,
+            "is_megathread": False,
+            "anonymous_comments": False
+        }
+    result = ed.post_thread(course_id, params)
     return {"result": result}
 
 @mcp.tool()
 def get_user_info() -> dict:
     """Get info about the currently authenticated Ed Discussion user."""
-    if not ed.api.api_token:
-        return {"error": "Please provide your Ed Discussion API token to continue."}
-    return ed.get_user_info()
+    # Get the user info from EdAPI
+    user_info = ed.get_user_info()
+    
+    # Extract essential user data for a cleaner response
+    simplified_info = {
+        "user": {
+            "id": user_info["user"]["id"],
+            "name": user_info["user"]["name"],
+            "email": user_info["user"]["email"],
+            "role": user_info["user"]["role"]
+        },
+        "courses": [
+            {
+                "id": course["course"]["id"],
+                "code": course["course"]["code"],
+                "name": course["course"]["name"],
+                "role": course["role"]["role"]
+            }
+            for course in user_info["courses"][:5]  # Limit to 5 courses for readability
+        ]
+    }
+        
+    return simplified_info
 
 @mcp.tool()
 def get_thread(thread_id: int) -> dict:
     """Get details for a specific Ed Discussion thread by thread ID."""
-    if not ed.api.api_token:
-        return {"error": "Please provide your Ed Discussion API token to continue."}
     return ed.get_thread(thread_id)
 
 @mcp.tool()
 def list_user_activity(user_id: int, course_id: int, limit: int = 10, filter: str = "all") -> list:
     """List a user's activity (threads/comments) in a course."""
-    if not ed.api.api_token:
-        return ["Please provide your Ed Discussion API token to continue."]
     return ed.list_user_activity(user_id, course_id, limit=limit, filter=filter)
 
 @mcp.tool()
 def upload_file(filename: str, content_type: str) -> dict:
     """Upload a file to Ed Discussion. Provide the local filename and its content type (e.g., 'image/png')."""
-    if not ed.api.api_token:
-        return {"error": "Please provide your Ed Discussion API token to continue."}
     return ed.upload_file(filename, content_type)
 
 if __name__ == "__main__":
-    mcp.run()
+    mcp.run()    
