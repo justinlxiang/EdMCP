@@ -67,7 +67,7 @@ def get_user_info() -> dict:
                 "name": course["course"]["name"],
                 "role": course["role"]["role"]
             }
-            for course in user_info["courses"][:5]  # Limit to 5 courses for readability
+            for course in user_info["courses"]
         ]
     }
         
@@ -79,7 +79,7 @@ def get_thread(thread_id: int) -> dict:
     return ed.get_thread(thread_id)
 
 @mcp.tool()
-def list_user_activity(user_id: int, course_id: int, limit: int = 10, filter: str = "all") -> list:
+def list_user_activity(user_id: int, course_id: int, limit: int = 20, filter: str = "all") -> list:
     """List a user's activity (threads/comments) in a course."""
     return ed.list_user_activity(user_id, course_id, limit=limit, filter=filter)
 
