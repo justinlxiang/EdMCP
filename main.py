@@ -104,4 +104,4 @@ def find_course_id(course_name: str) -> dict:
         return {"status": "multiple_matches", "matches": matches}
 
 if __name__ == "__main__":
-    mcp.run()    
+    mcp.run(transport="stdio")    

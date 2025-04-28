@@ -1,4 +1,4 @@
 fastapi
 uvicorn
 edapi 
-mcp[cli] 
+mcp
