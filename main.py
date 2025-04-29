@@ -30,9 +30,10 @@ def fetch_ed_posts(course_id: int, category: str = "General") -> list:
     return threads
 
 @mcp.tool()
-def post_ed_question(course_id: int, title: str, content: str, category: str = "General", anonymous: bool = False, isPrivate: bool = False) -> dict:
+def craft_ed_question(title: str, content: str, category: str = "General", anonymous: bool = False, isPrivate: bool = False) -> dict:
     """
-    Post a new question to Ed Discussion.
+    Craft a new question for Ed Discussion without posting it.
+    Returns a preview that the user should review and approve before posting.
     """
     content_xml = f'<document version="2.0"><paragraph>{content}</paragraph></document>'
     params = {
@@ -48,8 +49,27 @@ def post_ed_question(course_id: int, title: str, content: str, category: str = "
             "is_megathread": False,
             "anonymous_comments": False
         }
-    result = ed.post_thread(course_id, params)
-    return {"result": result}
+    return {
+        "status": "preview",
+        "message": "Question crafted successfully. Review before posting.",
+        "post_data": params,
+        "preview": {
+            "title": title,
+            "content": content,
+            "category": category,
+            "is_anonymous": anonymous,
+            "is_private": isPrivate
+        }
+    }
+
+@mcp.tool()
+def submit_ed_question(course_id: int, post_data: dict) -> dict:
+    """
+    Submit a previously crafted question to Ed Discussion.
+    This should only be used after the user has reviewed a question created with craft_ed_question and approved it.
+    """
+    result = ed.post_thread(course_id, post_data)
+    return {"status": "success", "message": "Question posted successfully", "result": result}
 
 @mcp.tool()
 def get_user_info() -> dict:
@@ -80,7 +100,7 @@ def find_course_id(course_name: str) -> dict:
     Find a course ID by its name or code (e.g., 'CS 3410').
     Searches through the user's enrolled courses and returns the matching course ID.
     """
-    user_info = get_user_info()
+    user_info = ed.get_user_info()
     matches = []
     
     # Normalize input for matching
@@ -88,12 +108,12 @@ def find_course_id(course_name: str) -> dict:
     
     for course in user_info["courses"]:
         # Check for matches in course code or name
-        if (course_name_lower in course["code"].lower() or 
-            course_name_lower in course["name"].lower()):
+        if (course_name_lower in course["course"]["code"].lower() or 
+            course_name_lower in course["course"]["name"].lower()):
             matches.append({
-                "id": course["id"],
-                "code": course["code"],
-                "name": course["name"]
+                "id": course["course"]["id"],
+                "code": course["course"]["code"],
+                "name": course["course"]["name"]
             })
     
     if not matches:
