@@ -1,3 +1,5 @@
+![Ed x MCP Banner](/banner.png)
+
 # Ed Discussion MCP Server
 
 This server implements the Model Context Protocol (MCP) to allow Claude Desktop (or any MCP client) to access Ed Discussion. Using this server, you can search for relevant posts, post new questions, view thread details, and more - all from the Claude chat interface.
